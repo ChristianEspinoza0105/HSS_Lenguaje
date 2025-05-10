@@ -1,0 +1,128 @@
+package com.hss.analisis;
+
+import java.util.*;
+import com.hss.modelo.*;
+import java_cup.runtime.*;
+
+parser code {:
+    public List<Documento> documentos = new ArrayList<>();
+:};
+
+terminal PAGE, SECTION, TEXT, BUTTON, IMAGE;
+terminal WIDTH, HEIGHT, COLOR, BACKGROUND, FONT_SIZE, MARGIN, PADDING;
+terminal WITH;
+terminal LBRACE, RBRACE, EQUALS;
+terminal String ID, STRING, HEX_COLOR;
+terminal Double NUMBER;
+terminal DOC, ENDDOC;
+
+non terminal Documento program, page, documento;
+non terminal java.util.List<Elemento> content;
+non terminal Elemento element;
+non terminal Estilo estilo_opt;
+non terminal java.util.List<Propiedad> property_list;
+non terminal Propiedad property;
+
+start with program;
+
+program ::= page:pg
+    {: RESULT = pg; :};
+
+page ::= PAGE ID:id LBRACE content:cnt RBRACE
+    {:
+        Documento doc = new Documento(id);
+        for (Elemento e : cnt) doc.agregarElemento(e);
+        RESULT = doc;
+    :};
+
+content ::= content:lst element:el
+    {:
+        lst.add(el);
+        RESULT = lst;
+    :}
+  | element:el
+    {:
+        List<Elemento> list = new ArrayList<>();
+        list.add(el);
+        RESULT = list;
+    :};
+
+element ::= SECTION ID:id LBRACE content:cnt RBRACE
+    {:
+        Elemento section = new Elemento("section", id);
+        for (Elemento e : cnt) section.agregarHijo(e);
+        RESULT = section;
+    :}
+  | TEXT STRING:str
+    {:
+        RESULT = new Elemento("text", str);
+    :}
+  | IMAGE STRING:str
+    {:
+        RESULT = new Elemento("image", str);
+    :}
+  | BUTTON STRING:str estilo_opt:sty
+    {:
+        Elemento btn = new Elemento("button", str);
+        if (sty != null) btn.setEstilo(sty);
+        RESULT = btn;
+    :};
+
+documento ::= DOC content:cnt ENDDOC
+    {:
+        Documento doc = new Documento();
+        for (Elemento e : cnt) doc.agregarElemento(e);
+        RESULT = doc;
+    :};
+
+estilo_opt ::= WITH property_list:lst
+    {:
+        Estilo estilo = new Estilo();
+        for (Propiedad p : lst) estilo.agregarPropiedad(p);
+        RESULT = estilo;
+    :}
+  |
+    {:
+        RESULT = null;
+    :};
+
+property_list ::= property_list:lst property:pr
+    {:
+        lst.add(pr);
+        RESULT = lst;
+    :}
+  | property:pr
+    {:
+        List<Propiedad> list = new ArrayList<>();
+        list.add(pr);
+        RESULT = list;
+    :};
+
+property ::= COLOR EQUALS HEX_COLOR:hex
+    {:
+        RESULT = new Propiedad("color", "#" + hex);
+    :}
+  | FONT_SIZE EQUALS NUMBER:num
+    {:
+        RESULT = new Propiedad("font-size", String.valueOf(num));
+    :}
+  | WIDTH EQUALS NUMBER:num
+    {:
+        RESULT = new Propiedad("width", String.valueOf(num));
+    :}
+  | HEIGHT EQUALS NUMBER:num
+    {:
+        RESULT = new Propiedad("height", String.valueOf(num));
+    :}
+  | BACKGROUND EQUALS HEX_COLOR:hex
+    {:
+        RESULT = new Propiedad("background", "#" + hex);
+    :}
+  | MARGIN EQUALS NUMBER:num
+    {:
+        RESULT = new Propiedad("margin", String.valueOf(num));
+    :}
+  | PADDING EQUALS NUMBER:num
+    {:
+        RESULT = new Propiedad("padding", String.valueOf(num));
+    :};
