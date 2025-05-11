@@ -28,12 +28,12 @@ public class MainApp extends Application {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setTitle("Interfaz HSS");
 
-        Image fxIcon = new Image(MainApp.class.getResourceAsStream("/images/logo.png"));
+        Image fxIcon = new Image(MainApp.class.getResourceAsStream("/images/logoicon.png"));
         primaryStage.getIcons().add(fxIcon);
 
         try {
             String os = System.getProperty("os.name").toLowerCase();
-            InputStream iconStream = MainApp.class.getResourceAsStream("/images/logo.png");
+            InputStream iconStream = MainApp.class.getResourceAsStream("/images/logoicon.png");
             if (iconStream != null) {
                 BufferedImage bufferedImage = ImageIO.read(iconStream);
                 if (bufferedImage != null) {
