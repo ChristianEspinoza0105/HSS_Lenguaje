@@ -1,0 +1,140 @@
+.menu-button {
+    -fx-background-color: #21252b;
+    -fx-text-fill: white;
+}
+
+.menu-button .label {
+    -fx-text-fill: white;
+}
+
+.menu-item {
+    -fx-background-color: #21252b;
+    -fx-text-fill: white;
+}
+
+.menu-item:focused, .menu-item:hover {
+    -fx-background-color: #21252b;
+}
+
+.context-menu {
+    -fx-background-color: #282c34;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-effect: none;
+}
+
+.menu-button > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: none;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-opacity: 0;
+    visibility: hidden;
+}
+
+.root {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 24px;
+    -fx-background-color: #21252b;
+}
+
+.label {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff !important;
+        -fx-background-color: #21252b;
+}
+
+.button {
+    -fx-font-family: "Verdana";
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff !important;
+    -fx-background-color: #282c34;
+}
+
+.text-field, .text-area {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff !important;
+    -fx-background-color: #282c34;
+    -fx-border-color: #282c34;
+}
+
+.code-area {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff !important;
+    -fx-background-color: #282c34;
+    -fx-border-color: #282c34;
+}
+
+.text {
+    -fx-text-fill: #ffffff !important;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: #3c3f41;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #565656;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #2c313c;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #21252b;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.keyword {
+    -fx-fill: #569CD6;
+}
+
+.number {
+    -fx-fill: #B5CEA8;
+}
+
+.string {
+    -fx-fill: #D69D85;
+}
+
+.comment {
+    -fx-fill: #6A9955;
+    -fx-font-style: italic;
+}
+
+.id {
+    -fx-fill: #9CDCFE;
+}
+
+.brace {
+    -fx-fill: #DCDCAA;
+}
+
+.error {
+    -fx-fill: red;
+    -fx-background-color: #ffcccc;
+}
