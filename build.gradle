@@ -1,5 +1,6 @@
 plugins {
-    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group = 'org.hss'
@@ -10,10 +11,33 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.github.vbmacher:java-cup:11b'
+
+    implementation 'org.fxmisc.richtext:richtextfx:0.10.9'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-test {
-    useJUnitPlatform()
+javafx {
+    version = "17.0.15"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+application {
+    mainClass = 'com.hss.MainApp'
+    applicationDefaultJvmArgs = [
+        "--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED",
+        "--add-reads=javafx.controls=ALL-UNNAMED"
+    ]
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

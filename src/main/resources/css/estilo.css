@@ -108,3 +108,33 @@
     -fx-shape: " ";
     -fx-padding: 0;
 }
+
+.keyword {
+    -fx-fill: #569CD6;
+}
+
+.number {
+    -fx-fill: #B5CEA8;
+}
+
+.string {
+    -fx-fill: #D69D85;
+}
+
+.comment {
+    -fx-fill: #6A9955;
+    -fx-font-style: italic;
+}
+
+.id {
+    -fx-fill: #9CDCFE;
+}
+
+.brace {
+    -fx-fill: #DCDCAA;
+}
+
+.error {
+    -fx-fill: red;
+    -fx-background-color: #ffcccc;
+}
