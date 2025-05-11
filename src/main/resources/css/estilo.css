@@ -110,28 +110,32 @@
 }
 
 .keyword {
-    -fx-fill: #569CD6;
+    -fx-fill: #569CD6; /* Color para las palabras clave */
 }
 
 .number {
-    -fx-fill: #B5CEA8;
+    -fx-fill: #B5CEA8; /* Color para los números */
 }
 
 .string {
-    -fx-fill: #D69D85;
+    -fx-fill: #D69D85; /* Color para las cadenas */
 }
 
 .comment {
-    -fx-fill: #6A9955;
+    -fx-fill: #6A9955; /* Color para los comentarios */
     -fx-font-style: italic;
 }
 
 .id {
-    -fx-fill: #9CDCFE;
+    -fx-fill: #9CDCFE; /* Color para los identificadores */
 }
 
 .brace {
-    -fx-fill: #DCDCAA;
+    -fx-fill: #DCDCAA; /* Color para los corchetes y llaves */
+}
+
+.operator {
+    -fx-fill: #F8F8F2; /* Color para los operadores */
 }
 
 .error {

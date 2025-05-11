@@ -16,6 +16,26 @@ public class Elemento {
         this.estilo = new Estilo();
     }
 
+    private String id;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    private String nombre;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public void agregarHijo(Elemento hijo) {
         this.hijos.add(hijo);
     }

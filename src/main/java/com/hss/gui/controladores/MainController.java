@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
@@ -19,6 +20,9 @@ import org.fxmisc.richtext.LineNumberFactory;
 import javafx.scene.control.Button;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +62,9 @@ public class MainController implements Initializable {
 
     @FXML
     private javafx.scene.control.TextArea inputTextArea;
+
+    @FXML
+    private Button saveButton;
 
     @FXML
     private void toggleInputConsole() {
@@ -106,23 +113,20 @@ public class MainController implements Initializable {
             EditorController editor = new EditorController();
             Documento documento = editor.analizarCodigo(code);
 
-            // Si el código es válido, alternar la visibilidad
             boolean isVisible = previewPane.isVisible();
             previewPane.setVisible(!isVisible);
             previewPane.setManaged(!isVisible);
 
-            // Si la vista previa ahora está visible, generar el contenido
             if (!isVisible) {
                 String htmlContent = GeneradorHTMLCSS.generarHTML(documento);
                 String cssContent = GeneradorHTMLCSS.generarCSS(documento);
                 String finalHtml = "<style>" + cssContent + "</style>" + htmlContent;
 
-                // Limpiar el previewPane antes de insertar el nuevo contenido
                 previewPane.getChildren().clear();
 
                 WebView webView = new WebView();
-                webView.setPrefWidth(800); // ajusta según tu diseño
-                webView.setPrefHeight(1000); // ajusta según tu diseño
+                webView.setPrefWidth(800);
+                webView.setPrefHeight(1000);
                 webView.getEngine().loadContent(finalHtml, "text/html");
 
                 previewPane.getChildren().add(webView);
@@ -136,6 +140,36 @@ public class MainController implements Initializable {
 
             System.err.println(errorBuilder.toString());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSave(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            try {
+                String code = codeArea.getText();
+                EditorController editor = new EditorController();
+                Documento documento = editor.analizarCodigo(code);
+
+                String htmlContent = GeneradorHTMLCSS.generarHTML(documento);
+                String cssContent = GeneradorHTMLCSS.generarCSS(documento);
+                String finalHtml = "<style>" + cssContent + "</style>" + htmlContent;
+
+                try (FileWriter writer = new FileWriter(file)) {
+                    writer.write(finalHtml);
+                    inputTextArea.setText("✔ Archivo guardado exitosamente.");
+                } catch (IOException e) {
+                    inputTextArea.setText("❌ Error al guardar el archivo.");
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                inputTextArea.setText("❌ Error al generar el archivo.");
+                e.printStackTrace();
+            }
         }
     }
 
@@ -161,25 +195,27 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Inicialización del CodeArea
         codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         codeArea.setEditable(true);
         codeArea.setWrapText(true);
         codeArea.setStyle("-fx-background-color: #282c34; -fx-font-size: 20px; -fx-font-family: 'JetBrains Mono'; -fx-fill: white;");
 
-        // Agregar el CodeArea al scrollPane
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
         root.setCenter(scrollPane);
 
-        // Cargar el CSS personalizado
         root.getStylesheets().add(getClass().getResource("/css/estilo.css").toExternalForm());
 
-        // Aplicar el resaltado de sintaxis
         applySyntaxHighlighting();
 
-        // Cargar las imágenes
         try {
+            Image downloadImage = new Image(getClass().getResourceAsStream("/images/download.png"));
+            ImageView downloadIconView = new ImageView(downloadImage);
+            downloadIconView.setFitWidth(24);
+            downloadIconView.setFitHeight(24);
+            downloadIconView.setPreserveRatio(true);
+            saveButton.setGraphic(downloadIconView);
+
             Image runImage = new Image(getClass().getResourceAsStream("/images/run.png"));
             ImageView runIconView = new ImageView(runImage);
             runIconView.setFitWidth(24);
@@ -200,12 +236,13 @@ public class MainController implements Initializable {
 
     private void applySyntaxHighlighting() {
         Pattern pattern = Pattern.compile(
-                "(?<KEYWORD>\\b(page|section|text|button|image|width|height|color|background|font-size|margin|padding|with|doc|enddoc)\\b)"
-                        + "|(?<NUMBER>\\b\\d+(\\.\\d+)?\\b)"
-                        + "|(?<STRING>\"([^\"\\\\]|\\\\.)*\"|'([^'\\\\]|\\\\.)*')"
-                        + "|(?<ID>\\b[a-zA-Z_][a-zA-Z0-9_-]*\\b)"
-                        + "|(?<BRACE>[{}=])"
-                        + "|(?<COMMENT>//[^\n]*)"
+                "(?<KEYWORD>\\b(page|section|text|button|image|width|height|color|background|font-size|margin|padding|with|doc|enddoc|if|else|for|while|return|function|var|let|const)\\b)"
+                + "|(?<NUMBER>\\b\\d+(\\.\\d+)?\\b)"
+                + "|(?<STRING>\"([^\"\\\\]|\\\\.)*\"|'([^'\\\\]|\\\\.)*')"
+                + "|(?<ID>\\b[a-zA-Z_][a-zA-Z0-9_-]*\\b)"
+                + "|(?<OPERATOR>\\+|\\-|\\*|\\/|\\=|\\+\\+|\\-\\-|\\!=|\\==|\\&\\&|\\|\\|)"
+                + "|(?<BRACE>[{}=])"
+                + "|(?<COMMENT>//[^\n]*)"
         );
 
         codeArea.textProperty().addListener((obs, oldText, newText) -> {
@@ -224,6 +261,7 @@ public class MainController implements Initializable {
                     matcher.group("NUMBER") != null ? "number" :
                     matcher.group("STRING") != null ? "string" :
                     matcher.group("ID") != null ? "id" :
+                    matcher.group("OPERATOR") != null ? "operator" :
                     matcher.group("BRACE") != null ? "brace" :
                     matcher.group("COMMENT") != null ? "comment" :
                     null;

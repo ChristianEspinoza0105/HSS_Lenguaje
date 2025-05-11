@@ -76,6 +76,12 @@
                     </graphic>
                 </Button>
 
+                <Button fx:id="saveButton" style="-fx-background-color: transparent;" onAction="#handleSave">
+                    <graphic>
+                        <ImageView fx:id="downloadIcon" fitHeight="24.0" fitWidth="24.0"/>
+                    </graphic>
+                </Button>
+
                 <MenuButton textFill="white"
                     text=""
                     style="-fx-background-color: transparent; -fx-text-fill: white;"
