@@ -10,8 +10,8 @@ public class Estilo {
         this.propiedades = new ArrayList<>();
     }
 
-    public void agregarPropiedad(Propiedad p) {
-        this.propiedades.add(p);
+    public void agregarPropiedad(Propiedad propiedad) {
+        this.propiedades.add(propiedad);
     }
 
     public List<Propiedad> getPropiedades() {

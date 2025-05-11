@@ -70,7 +70,7 @@
                     </graphic>
                 </Button>
 
-                <Button style="-fx-background-color: transparent;">
+                <Button style="-fx-background-color: transparent;" onAction="#handlePreview">
                     <graphic>
                         <ImageView fx:id="previewIcon" fitHeight="24.0" fitWidth="24.0" />
                     </graphic>
@@ -95,6 +95,10 @@
             </items>
         </ToolBar>
     </top>
+
+    <right>
+        <VBox fx:id="previewPane" prefWidth="800.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER"/>
+    </right>
 
     <bottom>
         <VBox>

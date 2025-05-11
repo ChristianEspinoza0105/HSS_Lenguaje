@@ -1,14 +1,17 @@
 package com.hss.gui.controladores;
 
+import com.hss.generacion.GeneradorHTMLCSS;
 import com.hss.modelo.Documento;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
+import javafx.scene.web.WebView;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import javafx.scene.layout.BorderPane;
@@ -16,9 +19,6 @@ import org.fxmisc.richtext.LineNumberFactory;
 import javafx.scene.control.Button;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-
-import java.awt.*;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +52,9 @@ public class MainController implements Initializable {
 
     @FXML
     private Button analyzeButton;
+
+    @FXML
+    private VBox previewPane;
 
     @FXML
     private javafx.scene.control.TextArea inputTextArea;
@@ -88,6 +91,47 @@ public class MainController implements Initializable {
             errorBuilder.append("❌ Error encontrado durante el análisis:\n");
             errorBuilder.append("Mensaje: ").append(e.getMessage()).append("\n");
 
+            inputTextArea.setText(errorBuilder.toString());
+
+            System.err.println(errorBuilder.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handlePreview() {
+        String code = codeArea.getText();
+
+        try {
+            EditorController editor = new EditorController();
+            Documento documento = editor.analizarCodigo(code);
+
+            // Si el código es válido, alternar la visibilidad
+            boolean isVisible = previewPane.isVisible();
+            previewPane.setVisible(!isVisible);
+            previewPane.setManaged(!isVisible);
+
+            // Si la vista previa ahora está visible, generar el contenido
+            if (!isVisible) {
+                String htmlContent = GeneradorHTMLCSS.generarHTML(documento);
+                String cssContent = GeneradorHTMLCSS.generarCSS(documento);
+                String finalHtml = "<style>" + cssContent + "</style>" + htmlContent;
+
+                // Limpiar el previewPane antes de insertar el nuevo contenido
+                previewPane.getChildren().clear();
+
+                WebView webView = new WebView();
+                webView.setPrefWidth(800); // ajusta según tu diseño
+                webView.setPrefHeight(1000); // ajusta según tu diseño
+                webView.getEngine().loadContent(finalHtml, "text/html");
+
+                previewPane.getChildren().add(webView);
+            }
+
+        } catch (Exception e) {
+            StringBuilder errorBuilder = new StringBuilder();
+            errorBuilder.append("❌ Error encontrado durante el análisis:\n");
+            errorBuilder.append("Mensaje: ").append(e.getMessage()).append("\n");
             inputTextArea.setText(errorBuilder.toString());
 
             System.err.println(errorBuilder.toString());
@@ -149,6 +193,9 @@ public class MainController implements Initializable {
         } catch (Exception e) {
             System.err.println("No se pudo cargar una o más imágenes: " + e.getMessage());
         }
+
+        previewPane.setVisible(false);
+        previewPane.setManaged(false);
     }
 
     private void applySyntaxHighlighting() {

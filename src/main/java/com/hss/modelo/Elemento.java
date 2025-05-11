@@ -13,6 +13,7 @@ public class Elemento {
         this.tipo = tipo;
         this.contenido = contenido;
         this.hijos = new ArrayList<>();
+        this.estilo = new Estilo();
     }
 
     public void agregarHijo(Elemento hijo) {
